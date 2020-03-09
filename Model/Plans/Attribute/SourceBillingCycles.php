@@ -2,7 +2,9 @@
 
 namespace Vindi\Payment\Model\Plans\Attribute;
 
-class SourceBillingCycles extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource
+use Magento\Eav\Model\Entity\Attribute\Source\AbstractSource;
+
+class SourceBillingCycles extends AbstractSource
 {
 
     /**
@@ -13,7 +15,7 @@ class SourceBillingCycles extends \Magento\Eav\Model\Entity\Attribute\Source\Abs
     {
         if ($this->_options === null) {
             $this->_options = [
-                ['label' => __('por tem indefinido'), 'value' => '']
+                ['label' => __('indefinitely'), 'value' => '']
             ];
 
             $this->_options = $this->getRangeOptions();

@@ -43,7 +43,7 @@ class PathPlanAttributeBillingTriggerDay implements DataPatchInterface
             'label' => '',
             'input' => 'select',
             'class' => '',
-            'source' => \Vindi\Payment\Model\Plans\Attribute\SourceBillingTriggerDay,
+            'source' => \Vindi\Payment\Model\Plans\Attribute\SourceBillingCycles,
             'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_GLOBAL,
             'visible' => true,
             'required' => true,

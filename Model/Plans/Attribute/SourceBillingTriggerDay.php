@@ -2,7 +2,9 @@
 
 namespace Vindi\Payment\Model\Plans\Attribute;
 
-class SourceBillingTriggerDay extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource
+use Magento\Eav\Model\Entity\Attribute\Source\AbstractSource;
+
+class SourceBillingTriggerDay extends AbstractSource
 {
     /**
      * Get all options

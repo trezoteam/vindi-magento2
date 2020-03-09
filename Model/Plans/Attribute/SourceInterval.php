@@ -2,7 +2,9 @@
 
 namespace Vindi\Payment\Model\Plans\Attribute;
 
-class SourceInterval extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource
+use Magento\Eav\Model\Entity\Attribute\Source\AbstractSource;
+
+class SourceInterval extends AbstractSource
 {
     /**
      * Get all options
@@ -12,8 +14,8 @@ class SourceInterval extends \Magento\Eav\Model\Entity\Attribute\Source\Abstract
     {
         if ($this->_options === null) {
             $this->_options = [
-                ['label' => __('mês(s)'), 'value' => 'months'],
-                ['label' => __('dia(s)'), 'value' => 'days']
+                ['label' => __('month(s)'), 'value' => 'months'],
+                ['label' => __('day(s)'), 'value' => 'days']
             ];
         }
 

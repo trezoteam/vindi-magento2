@@ -1,12 +1,15 @@
 <?php
 
-namespace Vindi\Payment\Model\Plans\Attribute;
+namespace Vindi\Payment\Model\Config\Source;
 
 use Magento\Eav\Model\Entity\Attribute\Source\AbstractSource;
 
-class SourceBillingCycles extends AbstractSource
+/**
+ * Class BillingCycles
+ * @package Vindi\Payment\Model\Config\Source
+ */
+class BillingCycles extends AbstractSource
 {
-
     /**
      * Get all options
      * @return array
@@ -15,24 +18,25 @@ class SourceBillingCycles extends AbstractSource
     {
         if ($this->_options === null) {
             $this->_options = [
-                ['label' => __('indefinitely'), 'value' => '']
+                ['label' => __('indefinitely'), 'value' => null],
+                ['label' => __('1 time'), 'value' => 1]
             ];
 
-            $this->_options = $this->getRangeOptions();
+            $this->_options = array_merge($this->_options, $this->getRangeOptions());
         }
 
         return $this->_options;
     }
 
     /**
-     * Options Select range 1 of 365
      * @return array
      */
     public function getRangeOptions()
     {
-        for ($number = 1; $number < 365; $number++) {
+        $range = [];
+        for ($number = 2; $number <= 60; $number++) {
             $range[] = [
-                'label' => $number,
+                'label' => __('%1 times', $number),
                 'value' => $number
             ];
         }

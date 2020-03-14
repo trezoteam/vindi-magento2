@@ -78,4 +78,16 @@ class Data extends AbstractHelper
         }
         return "https://sandbox-app.vindi.com.br/api/v1/";
     }
+
+    /**
+     * @param $code
+     * @return string
+     */
+    public static function sanitizeItemSku($code)
+    {
+        return strtolower( preg_replace("[^a-zA-Z0-9-]", "-",
+            strtr(utf8_decode(trim(preg_replace('/[ -]+/' , '-' , $code))),
+                utf8_decode("áàãâéêíóôõúüñçÁÀÃÂÉÊÍÓÔÕÚÜÑÇ"),
+                "aaaaeeiooouuncAAAAEEIOOOUUNC-")));
+    }
 }

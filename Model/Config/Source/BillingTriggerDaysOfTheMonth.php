@@ -1,10 +1,14 @@
 <?php
 
-namespace Vindi\Payment\Model\Plans\Attribute;
+namespace Vindi\Payment\Model\Config\Source;
 
 use Magento\Eav\Model\Entity\Attribute\Source\AbstractSource;
 
-class SourceBillingTriggerDay extends AbstractSource
+/**
+ * Class BillingTriggerDaysOfTheMonth
+ * @package Vindi\Payment\Model\Config\Source
+ */
+class BillingTriggerDaysOfTheMonth extends AbstractSource
 {
     /**
      * Get all options
@@ -13,11 +17,6 @@ class SourceBillingTriggerDay extends AbstractSource
     public function getAllOptions()
     {
         if ($this->_options === null) {
-            $this->_options = [
-                ['label' => __('por tempo indeterminado'), 'value' => null],
-                ['label' => __('1 vez'), 'value' => 1]
-            ];
-
             $this->_options = $this->getRangeOptions();
         }
 
@@ -25,14 +24,14 @@ class SourceBillingTriggerDay extends AbstractSource
     }
 
     /**
-     * Options Select range 1 of 60
      * @return array
      */
-    public function getRangeOptions()
+    private function getRangeOptions()
     {
-        for ($number = 2; $number < 60; $number++) {
+        $range =  [];
+        for ($number = 1; $number <= 30; $number++) {
             $range[] = [
-                'label' => $number . 'vezes',
+                'label' => __('Day %1', $number),
                 'value' => $number
             ];
         }

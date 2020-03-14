@@ -1,5 +1,10 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Vindi\Payment\Api\PlanRepositoryInterface" type="Vindi\Payment\Model\Vindi\PlanRepository"/>
+    <preference for="Vindi\Payment\Api\PlanManagementInterface" type="Vindi\Payment\Model\Vindi\PlanManagement"/>
+    <preference for="Vindi\Payment\Api\ProductRepositoryInterface" type="Vindi\Payment\Model\Vindi\ProductRepository"/>
+    <preference for="Vindi\Payment\Api\ProductManagementInterface" type="Vindi\Payment\Model\Vindi\ProductManagement"/>
+
     <type name="Magento\Framework\App\Request\CsrfValidator">
         <plugin name="csrf_validator_skip" type="Vindi\Payment\Plugin\CsrfValidatorSkip" />
     </type>

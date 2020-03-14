@@ -1,10 +1,14 @@
 <?php
 
-namespace Vindi\Payment\Model\Plans\Attribute;
+namespace Vindi\Payment\Model\Config\Source;
 
 use Magento\Eav\Model\Entity\Attribute\Source\AbstractSource;
 
-class SourceInterval extends AbstractSource
+/**
+ * Class Interval
+ * @package Vindi\Payment\Model\Config\Source
+ */
+class Interval extends AbstractSource
 {
     /**
      * Get all options

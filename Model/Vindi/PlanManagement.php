@@ -2,11 +2,11 @@
 
 namespace Vindi\Payment\Model\Vindi;
 
+use Magento\Bundle\Model\Product\Type;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\GroupedProduct\Model\Product\Type\Grouped;
 use Vindi\Payment\Api\PlanRepositoryInterface;
 use Vindi\Payment\Api\PlanManagementInterface;
 use Vindi\Payment\Api\ProductRepositoryInterface as VindiProductRepositoryInterface;
@@ -48,14 +48,15 @@ class PlanManagement implements PlanManagementInterface
     }
 
     /**
-     * @param Product $product
+     * @param $productId
      * @return int
      * @throws LocalizedException
      * @throws NoSuchEntityException
      */
-    public function create(Product $product)
+    public function create($productId)
     {
-        if ($product->getTypeId() != Grouped::TYPE_CODE) {
+        $product = $this->productRepository->getById($productId);
+        if ($product->getTypeId() != Type::TYPE_CODE) {
             throw new LocalizedException(__('Product Type not support to plan'));
         }
 
@@ -86,6 +87,7 @@ class PlanManagement implements PlanManagementInterface
         $planItems = [];
         $associatedItemsIds = $this->getLinkedProductsIds($plan);
         foreach ($associatedItemsIds as $itemId) {
+            $itemId = reset($itemId);
             $item = $this->productRepository->getById($itemId);
             $remoteItemId = $this->vindiProductRepository->findOrCreateProduct(
                 $item->getSku(),
@@ -112,8 +114,7 @@ class PlanManagement implements PlanManagementInterface
      */
     private function getLinkedProductsIds($product)
     {
-        /** @var Grouped $typeInstance */
         $typeInstance = $product->getTypeInstance();
-        return $typeInstance->getAssociatedProductIds($product);
+        return $typeInstance->getChildrenIds($product->getId(), true);
     }
 }

@@ -43,10 +43,10 @@ class ProductSaveObserver implements ObserverInterface
     public function execute(Observer $observer)
     {
         $product = $observer->getData('product');
-        if (!$this->helperData->isVindiPlan($product)) {
+        if (!$this->helperData->isVindiPlan($product->getId())) {
             return;
         }
 
-        $this->plansManagement->create($product);
+        $this->plansManagement->create($product->getId());
     }
 }

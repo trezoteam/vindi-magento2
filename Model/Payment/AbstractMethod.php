@@ -2,6 +2,7 @@
 
 namespace Vindi\Payment\Model\Payment;
 
+use Magento\Bundle\Model\Product\Type;
 use Magento\Framework\Api\AttributeValueFactory;
 use Magento\Framework\Api\ExtensionAttributesFactory;
 use Magento\Framework\App\Config\ScopeConfigInterface;
@@ -274,7 +275,7 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
     {
         foreach ($order->getItems() as $item) {
             try {
-                if ($this->helperData->isVindiPlan($item)) {
+                if ($this->helperData->isVindiPlan($item->getProductId())) {
                     return true;
                 }
             } catch (NoSuchEntityException $e) {
@@ -296,8 +297,19 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
 
         $customerId = $this->customer->findOrCreate($order);
 
-        $product = reset($order->getItems());
-        $planId = $this->planManagement->create($product);
+        $product = null;
+        foreach ($order->getItems() as $item) {
+            if ($item->getProductType() == Type::TYPE_CODE) {
+                $product = $item;
+                break;
+            }
+        }
+
+        if (is_null($product)) {
+            throw new LocalizedException(__('Plan not found'));
+        }
+
+        $planId = $this->planManagement->create($product->getProductId());
 
         $body = [
             'customer_id' => $customerId,

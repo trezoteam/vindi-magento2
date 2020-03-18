@@ -2,6 +2,7 @@
 
 namespace Vindi\Payment\Helper;
 
+use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Eav\Api\AttributeSetRepositoryInterface;
 use \Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
@@ -17,20 +18,27 @@ class Data extends AbstractHelper
      * @var AttributeSetRepositoryInterface
      */
     private $attributeSetRepository;
+    /**
+     * @var ProductRepositoryInterface
+     */
+    private $productRepository;
 
     /**
      * Data constructor.
      * @param Context $context
      * @param AttributeSetRepositoryInterface $attributeSetRepository
+     * @param ProductRepositoryInterface $productRepository
      */
     public function __construct(
         Context $context,
-        AttributeSetRepositoryInterface $attributeSetRepository
+        AttributeSetRepositoryInterface $attributeSetRepository,
+        ProductRepositoryInterface $productRepository
     ) {
 
         $this->scopeConfig = $context->getScopeConfig();
         parent::__construct($context);
         $this->attributeSetRepository = $attributeSetRepository;
+        $this->productRepository = $productRepository;
     }
 
     public function getCreditCardConfig($field, $group = 'vindi')
@@ -107,12 +115,13 @@ class Data extends AbstractHelper
     }
 
     /**
-     * @param $product
+     * @param $productId
      * @return bool
      * @throws NoSuchEntityException
      */
-    public function isVindiPlan($product)
+    public function isVindiPlan($productId)
     {
+        $product = $this->productRepository->getById($productId);
         $attrSet = $this->attributeSetRepository->get($product->getAttributeSetId());
         return $attrSet->getAttributeSetName() == UpgradeData::VINDI_PLANOS;
     }

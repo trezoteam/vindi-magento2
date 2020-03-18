@@ -31,7 +31,7 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
      */
     public function create($data = [])
     {
-        if ($response = $this->api->request('subscription', 'POST', $data)) {
+        if ($response = $this->api->request('subscriptions', 'POST', $data)) {
             return $response;
         }
 

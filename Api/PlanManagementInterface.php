@@ -9,9 +9,9 @@ namespace Vindi\Payment\Api;
 interface PlanManagementInterface
 {
     /**
-     * @param \Magento\Catalog\Model\Product $product
+     * @param $productId
      * @return int
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function create(\Magento\Catalog\Model\Product $product);
+    public function create($productId);
 }

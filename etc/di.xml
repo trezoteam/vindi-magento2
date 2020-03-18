@@ -4,6 +4,7 @@
     <preference for="Vindi\Payment\Api\PlanManagementInterface" type="Vindi\Payment\Model\Vindi\PlanManagement"/>
     <preference for="Vindi\Payment\Api\ProductRepositoryInterface" type="Vindi\Payment\Model\Vindi\ProductRepository"/>
     <preference for="Vindi\Payment\Api\ProductManagementInterface" type="Vindi\Payment\Model\Vindi\ProductManagement"/>
+    <preference for="Vindi\Payment\Api\SubscriptionRepositoryInterface" type="Vindi\Payment\Model\Vindi\SubscriptionRepository"/>
 
     <type name="Magento\Framework\App\Request\CsrfValidator">
         <plugin name="csrf_validator_skip" type="Vindi\Payment\Plugin\CsrfValidatorSkip" />

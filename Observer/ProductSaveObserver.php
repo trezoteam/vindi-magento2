@@ -2,12 +2,11 @@
 
 namespace Vindi\Payment\Observer;
 
-use Magento\Eav\Api\AttributeSetRepositoryInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Vindi\Payment\Api\PlanManagementInterface;
-use Vindi\Payment\Setup\UpgradeData;
+use Vindi\Payment\Helper\Data;
 
 /**
  * Class ProductLogObserver
@@ -16,25 +15,25 @@ use Vindi\Payment\Setup\UpgradeData;
 class ProductSaveObserver implements ObserverInterface
 {
     /**
-     * @var AttributeSetRepositoryInterface
-     */
-    private $attributeSetRepository;
-    /**
      * @var PlanManagementInterface
      */
     private $plansManagement;
+    /**
+     * @var Data
+     */
+    private $helperData;
 
     /**
      * ProductLogObserver constructor.
-     * @param AttributeSetRepositoryInterface $attributeSetRepository
      * @param PlanManagementInterface $plansManagement
+     * @param Data $helperData
      */
     public function __construct(
-        AttributeSetRepositoryInterface $attributeSetRepository,
-        PlanManagementInterface $plansManagement
+        PlanManagementInterface $plansManagement,
+        Data $helperData
     ) {
-        $this->attributeSetRepository = $attributeSetRepository;
         $this->plansManagement = $plansManagement;
+        $this->helperData = $helperData;
     }
 
     /**
@@ -44,8 +43,7 @@ class ProductSaveObserver implements ObserverInterface
     public function execute(Observer $observer)
     {
         $product = $observer->getData('product');
-        $attrSet = $this->attributeSetRepository->get($product->getAttributeSetId());
-        if ($attrSet->getAttributeSetName() != UpgradeData::VINDI_PLANOS) {
+        if (!$this->helperData->isVindiPlan($product)) {
             return;
         }
 

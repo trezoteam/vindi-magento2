@@ -2,20 +2,35 @@
 
 namespace Vindi\Payment\Helper;
 
+use Magento\Eav\Api\AttributeSetRepositoryInterface;
 use \Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\App\Helper\Context;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Sales\Model\Order;
 use Vindi\Payment\Model\Config\Source\Mode;
+use Vindi\Payment\Setup\UpgradeData;
 
 class Data extends AbstractHelper
 {
     protected $scopeConfig;
+    /**
+     * @var AttributeSetRepositoryInterface
+     */
+    private $attributeSetRepository;
 
+    /**
+     * Data constructor.
+     * @param Context $context
+     * @param AttributeSetRepositoryInterface $attributeSetRepository
+     */
     public function __construct(
-        \Magento\Framework\App\Helper\Context $context
+        Context $context,
+        AttributeSetRepositoryInterface $attributeSetRepository
     ) {
 
         $this->scopeConfig = $context->getScopeConfig();
         parent::__construct($context);
+        $this->attributeSetRepository = $attributeSetRepository;
     }
 
     public function getCreditCardConfig($field, $group = 'vindi')
@@ -89,5 +104,16 @@ class Data extends AbstractHelper
             strtr(utf8_decode(trim(preg_replace('/[ -]+/' , '-' , $code))),
                 utf8_decode("áàãâéêíóôõúüñçÁÀÃÂÉÊÍÓÔÕÚÜÑÇ"),
                 "aaaaeeiooouuncAAAAEEIOOOUUNC-")));
+    }
+
+    /**
+     * @param $product
+     * @return bool
+     * @throws NoSuchEntityException
+     */
+    public function isVindiPlan($product)
+    {
+        $attrSet = $this->attributeSetRepository->get($product->getAttributeSetId());
+        return $attrSet->getAttributeSetName() == UpgradeData::VINDI_PLANOS;
     }
 }

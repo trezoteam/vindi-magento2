@@ -13,4 +13,10 @@ interface ProductManagementInterface
      * @return array
      */
     public function findOrCreateProductsFromOrder(\Magento\Sales\Model\Order $order);
+
+    /**
+     * @param \Magento\Sales\Model\Order $order
+     * @return array
+     */
+    public function findOrCreateProductsToSubscription(\Magento\Sales\Model\Order $order);
 }

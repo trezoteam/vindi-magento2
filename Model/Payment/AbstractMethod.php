@@ -18,6 +18,7 @@ use Magento\Payment\Helper\Data;
 use Magento\Payment\Model\InfoInterface;
 use Magento\Payment\Model\Method\Logger;
 use Magento\Paypal\Model\Info;
+use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Service\InvoiceService;
 use Psr\Log\LoggerInterface;
@@ -215,8 +216,8 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
         /** @var Order $order */
         $order = $payment->getOrder();
 
-        if ($this->isSubscriptionOrder($order)) {
-            return $this->handleSubscriptionOrder($payment);
+        if ($plan = $this->isSubscriptionOrder($order)) {
+            return $this->handleSubscriptionOrder($payment, $plan);
         }
 
         $customerId = $this->customer->findOrCreate($order);
@@ -239,83 +240,38 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
         }
 
         if ($bill = $this->bill->create($body)) {
-            if ($body['payment_method_code'] === PaymentMethod::BANK_SLIP) {
-                $payment->setAdditionalInformation('print_url', $bill['charges'][0]['print_url']);
-                $payment->setAdditionalInformation('due_at', $bill['charges'][0]['due_at']);
-            }
-
-            if (
-                $body['payment_method_code'] === PaymentMethod::BANK_SLIP
-                || $body['payment_method_code'] === PaymentMethod::DEBIT_CARD
-                || $bill['status'] === Bill::PAID_STATUS
-                || $bill['status'] === Bill::REVIEW_STATUS
-                || reset($bill['charges'])['status'] === Bill::FRAUD_REVIEW_STATUS
-            ) {
+            $this->handleBankSplitAdditionalInformation($payment, $body, $bill);
+            if ($this->successfullyPaid($body, $bill)) {
                 $order->setVindiBillId($bill['id']);
                 return $bill['id'];
             }
             $this->bill->delete($bill['id']);
         }
 
-        $this->psrLogger->error(__(sprintf('Error on order payment %d.', $order->getId())));
-        $message = __('There has been a payment confirmation error. Verify data and try again');
-        $order->setState(Order::STATE_CANCELED)
-            ->setStatus($order->getConfig()->getStateDefaultStatus(Order::STATE_CANCELED))
-            ->addStatusHistoryComment($message->getText());
-        throw new LocalizedException($message);
-
-        return $this;
-    }
-
-    /**
-     * @param Order $order
-     * @return bool
-     */
-    private function isSubscriptionOrder(Order $order)
-    {
-        foreach ($order->getItems() as $item) {
-            try {
-                if ($this->helperData->isVindiPlan($item->getProductId())) {
-                    return true;
-                }
-            } catch (NoSuchEntityException $e) {
-            }
-        }
-
-        return false;
+        return $this->handleError($order);
     }
 
     /**
      * @param InfoInterface $payment
-     * @return $this
+     * @param OrderItemInterface $plan
+     * @return mixed
      * @throws LocalizedException
      */
-    private function handleSubscriptionOrder(InfoInterface $payment)
+    private function handleSubscriptionOrder(InfoInterface $payment, OrderItemInterface $plan)
     {
         /** @var Order $order */
         $order = $payment->getOrder();
-
         $customerId = $this->customer->findOrCreate($order);
+        $planId = $this->planManagement->create($plan->getProductId());
 
-        $product = null;
-        foreach ($order->getItems() as $item) {
-            if ($item->getProductType() == Type::TYPE_CODE) {
-                $product = $item;
-                break;
-            }
-        }
-
-        if (is_null($product)) {
-            throw new LocalizedException(__('Plan not found'));
-        }
-
-        $planId = $this->planManagement->create($product->getProductId());
+        $productItems = $this->productManagement->findOrCreateProductsToSubscription($order);
 
         $body = [
             'customer_id' => $customerId,
             'payment_method_code' => $this->getPaymentMethodCode(),
             'plan_id' => $planId,
-            'code' => \Vindi\Payment\Helper\Data::sanitizeItemSku($product->getSku())
+            'product_items' => $productItems,
+            'code' => $order->getIncrementId()
         ];
 
         if ($body['payment_method_code'] === PaymentMethod::CREDIT_CARD) {
@@ -329,24 +285,41 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
 
         if ($responseData = $this->subscriptionRepository->create($body)) {
             $bill = $responseData['bill'];
-            if ($body['payment_method_code'] === PaymentMethod::BANK_SLIP) {
-                $payment->setAdditionalInformation('print_url', $bill['charges'][0]['print_url']);
-                $payment->setAdditionalInformation('due_at', $bill['charges'][0]['due_at']);
-            }
-
-            if (
-                $body['payment_method_code'] === PaymentMethod::BANK_SLIP
-                || $body['payment_method_code'] === PaymentMethod::DEBIT_CARD
-                || $bill['status'] === Bill::PAID_STATUS
-                || $bill['status'] === Bill::REVIEW_STATUS
-                || reset($bill['charges'])['status'] === Bill::FRAUD_REVIEW_STATUS
-            ) {
+            $this->handleBankSplitAdditionalInformation($payment, $body, $bill);
+            if ($this->successfullyPaid($body, $bill)) {
                 $order->setVindiBillId($bill['id']);
                 return $bill['id'];
             }
             $this->bill->delete($bill['id']);
         }
 
+        return $this->handleError($order);
+    }
+
+    /**
+     * @param Order $order
+     * @return OrderItemInterface|bool
+     */
+    private function isSubscriptionOrder(Order $order)
+    {
+        foreach ($order->getItems() as $item) {
+            try {
+                if ($this->helperData->isVindiPlan($item->getProductId())) {
+                    return $item;
+                }
+            } catch (NoSuchEntityException $e) {
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param Order $order
+     * @throws LocalizedException
+     */
+    private function handleError(Order $order)
+    {
         $this->psrLogger->error(__(sprintf('Error on order payment %d.', $order->getId())));
         $message = __('There has been a payment confirmation error. Verify data and try again');
         $order->setState(Order::STATE_CANCELED)
@@ -354,5 +327,38 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
             ->addStatusHistoryComment($message->getText());
 
         throw new LocalizedException($message);
+    }
+
+    /**
+     * @param InfoInterface $payment
+     * @param array $body
+     * @param $bill
+     */
+    protected function handleBankSplitAdditionalInformation(InfoInterface $payment, array $body, $bill)
+    {
+        if ($body['payment_method_code'] === PaymentMethod::BANK_SLIP) {
+            $payment->setAdditionalInformation('print_url', $bill['charges'][0]['print_url']);
+            $payment->setAdditionalInformation('due_at', $bill['charges'][0]['due_at']);
+        }
+    }
+
+    /**
+     * @param array $body
+     * @param $bill
+     * @return bool
+     */
+    private function successfullyPaid(array $body, $bill)
+    {
+        if (
+            $body['payment_method_code'] === PaymentMethod::BANK_SLIP
+            || $body['payment_method_code'] === PaymentMethod::DEBIT_CARD
+            || $bill['status'] === Bill::PAID_STATUS
+            || $bill['status'] === Bill::REVIEW_STATUS
+            || reset($bill['charges'])['status'] === Bill::FRAUD_REVIEW_STATUS
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }

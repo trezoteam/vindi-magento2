@@ -35,9 +35,7 @@ class PlanRepository implements PlanRepositoryInterface
         $endpoint = 'plans';
         $method = 'POST';
 
-        $plan = $this->findOneByCode($data['code']);
-        if ($plan) {
-            $data['plan_items'] = $this->mergePlanItems($data['plan_items'], $plan['plan_items']);
+        if ($plan = $this->findOneByCode($data['code'])) {
             $endpoint .= '/' . $plan['id'];
             $method = 'PUT';
         }
@@ -62,31 +60,5 @@ class PlanRepository implements PlanRepositoryInterface
         }
 
         return false;
-    }
-
-    /**
-     * @param array $newItems
-     * @param array $currentItems
-     * @return array
-     */
-    protected function mergePlanItems($newItems = [], $currentItems = []): array
-    {
-        foreach ($currentItems as $current) {
-            foreach ($newItems as $new) {
-                if (!array_key_exists('product_id', $new)) {
-                    continue;
-                }
-                if ($current['product']['id'] == $new['product_id']) {
-                    break;
-                }
-            }
-
-            $newItems[] = [
-                'id' => $current['id'],
-                '_destroy' => '1'
-            ];
-        }
-
-        return $newItems;
     }
 }

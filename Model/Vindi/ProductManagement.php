@@ -30,6 +30,43 @@ class ProductManagement implements ProductManagementInterface
     /**
      * @inheritDoc
      */
+    public function findOrCreateProductsToSubscription(Order $order)
+    {
+        $list = [];
+        $discounts = [];
+
+        $items = $this->findOrCreateProductsFromOrder($order);
+        foreach ($items as $item) {
+            if ($item['amount'] < 0) {
+                array_push($discounts, [
+                    'discount_type' => 'amount',
+                    'amount' => $item['amount'] * -1
+                ]);
+
+                continue;
+            }
+
+            array_push($list, [
+                'product_id' => $item['product_id'],
+                'quantity' => 1,
+                'pricing_schema' => [
+                    'price' => $item['amount']
+                ]
+            ]);
+        }
+
+        if (!empty($discounts)) {
+            foreach ($discounts as $discount) {
+                $list[0]['discounts'][] = $discount;
+            }
+        }
+
+        return $list;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findOrCreateProductsFromOrder(Order $order)
     {
         $list = [];

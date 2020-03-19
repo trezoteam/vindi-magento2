@@ -58,22 +58,73 @@
 			</settings>
 		</column>
 		<column name="start_at">
-			<settings>
-				<filter>text</filter>
-				<label translate="true">start_at</label>
-			</settings>
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="filter" xsi:type="string">start_at</item>
+					<item name="component" xsi:type="string">Magento_Ui/js/grid/columns/date</item>
+					<item name="dataType" xsi:type="string">date</item>
+					<item name="dateFormat" xsi:type="string">dd/MM/Y</item>
+					<item name="label" xsi:type="string" translate="true">start_at</item>
+				</item>
+			</argument>
 		</column>
 		<column name="payment_method">
-			<settings>
-				<filter>text</filter>
-				<label translate="true">payment_method</label>
-			</settings>
+			<argument name="data" xsi:type="array">
+				<item name="options" xsi:type="array">
+					<item name="credit_card" xsi:type="array">
+						<item name="value" xsi:type="string">credit_card</item>
+						<item name="label" xsi:type="string" translate="true">Cartão de Crédito</item>
+					</item>
+					<item name="bank_slip" xsi:type="array">
+						<item name="value" xsi:type="string">bank_slip</item>
+						<item name="label" xsi:type="string" translate="true">Boleto Bancário</item>
+					</item>
+				</item>
+				<item name="config" xsi:type="array">
+					<item name="filter" xsi:type="string">select</item>
+					<item name="component" xsi:type="string">Magento_Ui/js/grid/columns/select</item>
+					<item name="editor" xsi:type="string">select</item>
+					<item name="dataType" xsi:type="string">select</item>
+					<item name="label" xsi:type="string" translate="true">payment_method</item>
+				</item>
+			</argument>
 		</column>
 		<column name="status">
-			<settings>
-				<filter>text</filter>
-				<label translate="true">status</label>
-			</settings>
+			<argument name="data" xsi:type="array">
+				<item name="options" xsi:type="array">
+					<item name="active" xsi:type="array">
+						<item name="value" xsi:type="string">active</item>
+						<item name="label" xsi:type="string" translate="true">Active</item>
+					</item>
+					<item name="future" xsi:type="array">
+						<item name="value" xsi:type="string">future</item>
+						<item name="label" xsi:type="string" translate="true">Future</item>
+					</item>
+					<item name="canceled" xsi:type="array">
+						<item name="value" xsi:type="string">canceled</item>
+						<item name="label" xsi:type="string" translate="true">Canceled</item>
+					</item>
+					<item name="expired" xsi:type="array">
+						<item name="value" xsi:type="string">expired</item>
+						<item name="label" xsi:type="string" translate="true">Expired</item>
+					</item>
+				</item>
+				<item name="config" xsi:type="array">
+					<item name="filter" xsi:type="string">select</item>
+					<item name="component" xsi:type="string">Magento_Ui/js/grid/columns/select</item>
+					<item name="editor" xsi:type="string">select</item>
+					<item name="dataType" xsi:type="string">select</item>
+					<item name="label" xsi:type="string" translate="true">status</item>
+				</item>
+			</argument>
 		</column>
+		<actionsColumn class="Vindi\Payment\Ui\Component\Listing\Column\SubscriptionActions" name="actions" sortOrder="1000">
+			<settings>
+				<label>Ações</label>
+				<indexField>id</indexField>
+				<resizeEnabled>false</resizeEnabled>
+				<resizeDefaultWidth>130</resizeDefaultWidth>
+			</settings>
+		</actionsColumn>
 	</columns>
 </listing>

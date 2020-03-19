@@ -96,3 +96,7 @@
 "start_at","Início"
 "payment_method","Método de Pagamento"
 "status","Status"
+"Active","Ativo"
+"Future","Agendado"
+"Canceled","Cancelado"
+"Expired","Expirado"

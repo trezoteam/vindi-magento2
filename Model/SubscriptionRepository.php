@@ -176,4 +176,3 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
         return $searchResults;
     }
 }
-

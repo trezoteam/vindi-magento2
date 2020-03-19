@@ -6,7 +6,7 @@ use Magento\Bundle\Model\Product\Type;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Vindi\Payment\Api\PlanRepositoryInterface;
+use Vindi\Payment\Api\PlanInterface;
 use Vindi\Payment\Api\PlanManagementInterface;
 use Vindi\Payment\Helper\Data;
 
@@ -21,18 +21,18 @@ class PlanManagement implements PlanManagementInterface
      */
     private $productRepository;
     /**
-     * @var PlanRepositoryInterface
+     * @var PlanInterface
      */
     private $planRepository;
 
     /**
      * PlansManagement constructor.
      * @param ProductRepositoryInterface $productRepository
-     * @param PlanRepositoryInterface $planRepository
+     * @param PlanInterface $planRepository
      */
     public function __construct(
         ProductRepositoryInterface $productRepository,
-        PlanRepositoryInterface $planRepository
+        PlanInterface $planRepository
     ) {
         $this->productRepository = $productRepository;
         $this->planRepository = $planRepository;

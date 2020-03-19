@@ -4,7 +4,7 @@ namespace Vindi\Payment\Model\Vindi;
 
 use Magento\Sales\Model\Order;
 use Vindi\Payment\Api\ProductManagementInterface;
-use Vindi\Payment\Api\ProductRepositoryInterface;
+use Vindi\Payment\Api\ProductInterface;
 
 /**
  * Class ProductManagement
@@ -13,16 +13,16 @@ use Vindi\Payment\Api\ProductRepositoryInterface;
 class ProductManagement implements ProductManagementInterface
 {
     /**
-     * @var ProductRepositoryInterface
+     * @var ProductInterface
      */
     private $productRepository;
 
     /**
      * ProductManagement constructor.
-     * @param ProductRepositoryInterface $productRepository
+     * @param ProductInterface $productRepository
      */
     public function __construct(
-        ProductRepositoryInterface $productRepository
+        ProductInterface $productRepository
     ) {
         $this->productRepository = $productRepository;
     }

@@ -3,14 +3,14 @@
 namespace Vindi\Payment\Model\Vindi;
 
 use Magento\Framework\Exception\LocalizedException;
-use Vindi\Payment\Api\PlanRepositoryInterface;
+use Vindi\Payment\Api\PlanInterface;
 use Vindi\Payment\Helper\Api;
 
 /**
- * Class PlanRepository
+ * Class Plan
  * @package Vindi\Payment\Model\Vindi
  */
-class PlanRepository implements PlanRepositoryInterface
+class Plan implements PlanInterface
 {
     /**
      * @var Api
@@ -18,7 +18,7 @@ class PlanRepository implements PlanRepositoryInterface
     private $api;
 
     /**
-     * PlanRepository constructor.
+     * Plan constructor.
      * @param Api $api
      */
     public function __construct(

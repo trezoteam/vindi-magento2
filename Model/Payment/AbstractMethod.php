@@ -2,7 +2,6 @@
 
 namespace Vindi\Payment\Model\Payment;
 
-use Magento\Bundle\Model\Product\Type;
 use Magento\Framework\Api\AttributeValueFactory;
 use Magento\Framework\Api\ExtensionAttributesFactory;
 use Magento\Framework\App\Config\ScopeConfigInterface;
@@ -17,14 +16,13 @@ use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Payment\Helper\Data;
 use Magento\Payment\Model\InfoInterface;
 use Magento\Payment\Model\Method\Logger;
-use Magento\Paypal\Model\Info;
 use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Service\InvoiceService;
 use Psr\Log\LoggerInterface;
 use Vindi\Payment\Api\PlanManagementInterface;
 use Vindi\Payment\Api\ProductManagementInterface;
-use Vindi\Payment\Api\SubscriptionRepositoryInterface;
+use Vindi\Payment\Api\SubscriptionInterface;
 
 abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMethod
 {
@@ -80,7 +78,7 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
      */
     private $planManagement;
     /**
-     * @var SubscriptionRepositoryInterface
+     * @var SubscriptionInterface
      */
     private $subscriptionRepository;
 
@@ -97,7 +95,7 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
         Customer $customer,
         ProductManagementInterface $productManagement,
         PlanManagementInterface $planManagement,
-        SubscriptionRepositoryInterface $subscriptionRepository,
+        SubscriptionInterface $subscriptionRepository,
         Bill $bill,
         Profile $profile,
         PaymentMethod $paymentMethod,

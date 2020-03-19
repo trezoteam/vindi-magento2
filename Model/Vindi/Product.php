@@ -2,15 +2,15 @@
 
 namespace Vindi\Payment\Model\Vindi;
 
-use Vindi\Payment\Api\ProductRepositoryInterface;
+use Vindi\Payment\Api\ProductInterface;
 use Vindi\Payment\Helper\Api;
 use Vindi\Payment\Helper\Data;
 
 /**
- * Class ProductRepository
+ * Class Product
  * @package Vindi\Payment\Model\Vindi
  */
-class ProductRepository implements ProductRepositoryInterface
+class Product implements ProductInterface
 {
     /**
      * @var Api
@@ -18,7 +18,7 @@ class ProductRepository implements ProductRepositoryInterface
     private $api;
 
     /**
-     * ProductRepository constructor.
+     * Product constructor.
      * @param Api $api
      */
     public function __construct(

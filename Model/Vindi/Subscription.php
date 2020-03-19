@@ -2,14 +2,14 @@
 
 namespace Vindi\Payment\Model\Vindi;
 
-use Vindi\Payment\Api\SubscriptionRepositoryInterface;
+use Vindi\Payment\Api\SubscriptionInterface;
 use Vindi\Payment\Helper\Api;
 
 /**
- * Class SubscriptionRepository
+ * Class Subscription
  * @package Vindi\Payment\Model\Vindi
  */
-class SubscriptionRepository implements SubscriptionRepositoryInterface
+class Subscription implements SubscriptionInterface
 {
     /**
      * @var Api
@@ -17,7 +17,7 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
     private $api;
 
     /**
-     * SubscriptionRepository constructor.
+     * Subscription constructor.
      * @param Api $api
      */
     public function __construct(

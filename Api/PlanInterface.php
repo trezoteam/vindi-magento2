@@ -6,7 +6,7 @@ namespace Vindi\Payment\Api;
  * Interface PlanRepositoryInterface
  * @package Vindi\Payment\Api
  */
-interface PlanRepositoryInterface
+interface PlanInterface
 {
     /**
      * @param array $data

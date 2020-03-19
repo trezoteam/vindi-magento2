@@ -6,7 +6,7 @@ namespace Vindi\Payment\Api;
  * Interface SubscriptionRepositoryInterface
  * @package Vindi\Payment\Api
  */
-interface SubscriptionRepositoryInterface
+interface SubscriptionInterface
 {
     /**
      * @param array $data

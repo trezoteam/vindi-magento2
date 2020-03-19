@@ -6,7 +6,7 @@ namespace Vindi\Payment\Api;
  * Interface ProductRepositoryInterface
  * @package Vindi\Payment\Api
  */
-interface ProductRepositoryInterface
+interface ProductInterface
 {
     /**
      * @param $itemSku

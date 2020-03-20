@@ -13,7 +13,7 @@ use Magento\Ui\Component\Listing\Columns\Column;
  */
 class SubscriptionActions extends Column
 {
-    const URL_PATH_EDIT = '#';
+    const URL_PATH_EDIT = 'vindi_payment/subscription/view';
 
     /**
      * @var UrlInterface

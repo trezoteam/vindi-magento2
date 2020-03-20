@@ -94,19 +94,19 @@
 				<item name="options" xsi:type="array">
 					<item name="active" xsi:type="array">
 						<item name="value" xsi:type="string">active</item>
-						<item name="label" xsi:type="string" translate="true">Active</item>
+						<item name="label" xsi:type="string" translate="true">active</item>
 					</item>
 					<item name="future" xsi:type="array">
 						<item name="value" xsi:type="string">future</item>
-						<item name="label" xsi:type="string" translate="true">Future</item>
+						<item name="label" xsi:type="string" translate="true">future</item>
 					</item>
 					<item name="canceled" xsi:type="array">
 						<item name="value" xsi:type="string">canceled</item>
-						<item name="label" xsi:type="string" translate="true">Canceled</item>
+						<item name="label" xsi:type="string" translate="true">canceled</item>
 					</item>
 					<item name="expired" xsi:type="array">
 						<item name="value" xsi:type="string">expired</item>
-						<item name="label" xsi:type="string" translate="true">Expired</item>
+						<item name="label" xsi:type="string" translate="true">expired</item>
 					</item>
 				</item>
 				<item name="config" xsi:type="array">

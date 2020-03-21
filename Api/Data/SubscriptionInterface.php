@@ -10,6 +10,7 @@ interface SubscriptionInterface
 {
     const ID = 'id';
     const PAYMENT_METHOD = 'payment_method';
+    const PAYMENT_PROFILE = 'payment_profile';
     const CLIENT = 'client';
     const STATUS = 'status';
     const START_AT = 'start_at';
@@ -79,6 +80,19 @@ interface SubscriptionInterface
      * @return \Vindi\Payment\Api\Data\SubscriptionInterface
      */
     public function setPaymentMethod($paymentMethod);
+
+    /**
+     * Get payment_profile
+     * @return string|null
+     */
+    public function getPaymentProfile();
+
+    /**
+     * Set payment_profile
+     * @param string $paymentProfile
+     * @return \Vindi\Payment\Api\Data\SubscriptionInterface
+     */
+    public function setPaymentProfile($paymentProfile);
 
     /**
      * Get status

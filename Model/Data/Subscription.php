@@ -107,6 +107,25 @@ class Subscription extends AbstractSimpleObject implements SubscriptionInterface
     }
 
     /**
+     * Get payment_profile
+     * @return string|null
+     */
+    public function getPaymentProfile()
+    {
+        return $this->_get(self::PAYMENT_PROFILE);
+    }
+
+    /**
+     * Set payment_profile
+     * @param string $paymentProfile
+     * @return SubscriptionInterface
+     */
+    public function setPaymentProfile($paymentProfile)
+    {
+        return $this->setData(self::PAYMENT_PROFILE, $paymentProfile);
+    }
+
+    /**
      * Get status
      * @return string|null
      */

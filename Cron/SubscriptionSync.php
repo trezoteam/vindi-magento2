@@ -60,17 +60,22 @@ class SubscriptionSync
             die('Done');
         }
 
-        foreach ($request['subscriptions'] as $item) {
+        foreach ($request['subscriptions'] as $key => $item) {
             $startAt = new DateTime($item['start_at']);
 
-            $data[] = [
+            $data[$key] = [
                 'id' => $item['id'],
                 'client' => $item['customer']['name'],
                 'plan' => $item['plan']['name'],
                 'payment_method' => $item['payment_method']['code'],
+                'payment_profile' => null,
                 'status' => $item['status'],
                 'start_at' => $startAt->format('Y-m-d H:i:s')
             ];
+
+            if (is_array($item['payment_profile'])) {
+                $data[$key]['payment_profile'] = $item['payment_profile']['id'];
+            }
         }
 
         try {

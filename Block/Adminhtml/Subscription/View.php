@@ -69,7 +69,7 @@ class View extends Container
             'label' => __('Edit Subscription'),
             'class' => 'primary',
             'button_class' => 'add',
-            'onclick' => "setLocation('')"
+            'onclick' => 'setLocation(\'' . $this->getEditUrl() . '\')'
         ]);
 
         return parent::_prepareLayout();
@@ -81,6 +81,16 @@ class View extends Container
     public function getBackUrl()
     {
         return $this->getUrl('*/*/');
+    }
+
+    /**
+     * @return string
+     */
+    public function getEditUrl()
+    {
+        return $this->getUrl('vindi_payment/subscription/edit', [
+            'id' => $this->getSubscriptionId()
+        ]);
     }
 
     /**

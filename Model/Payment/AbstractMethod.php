@@ -27,7 +27,7 @@ use Vindi\Payment\Api\SubscriptionInterface;
 abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMethod
 {
     /**
-     * @var Api
+     * @var \Vindi\Payment\Helper\Api
      */
     protected $api;
 
@@ -90,7 +90,7 @@ abstract class AbstractMethod extends \Magento\Payment\Model\Method\AbstractMeth
         Data $paymentData,
         ScopeConfigInterface $scopeConfig,
         Logger $logger,
-        Api $api,
+        \Vindi\Payment\Helper\Api $api,
         InvoiceService $invoiceService,
         Customer $customer,
         ProductManagementInterface $productManagement,

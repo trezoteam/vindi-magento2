@@ -2,18 +2,41 @@
 
 namespace Vindi\Payment\Test\Unit;
 
-class OrderTest extends \PHPUnit\Framework\TestCase
-{
+use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+use Vindi\Payment\Helper\Api;
 
+/**
+ * Class SubscriptionOrderTest
+ * @package Vindi\Payment\Test\Unit
+ */
+class SubscriptionOrderTest extends TestCase
+{
+    /**
+     * @var ObjectManager
+     */
     protected $objectManager;
+    /**
+     * @var MockObject
+     */
     protected $customerRepositoryInterface;
+    /**
+     * @var MockObject
+     */
     protected $managerInterface;
 
     public function setUp()
     {
-        $this->objectManager               = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
-        $this->customerRepositoryInterface = $this->getMockBuilder(\Magento\Customer\Api\CustomerRepositoryInterface::class)->disableOriginalConstructor()->getMock();
-        $this->managerInterface            = $this->getMockBuilder(\Magento\Framework\Message\ManagerInterface::class)->disableOriginalConstructor()->getMock();
+        $this->objectManager = new ObjectManager($this);
+        $this->customerRepositoryInterface = $this->getMockBuilder(CustomerRepositoryInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->managerInterface = $this->getMockBuilder(ManagerInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
     }
 
     public function testOrderWithTax()
@@ -22,7 +45,7 @@ class OrderTest extends \PHPUnit\Framework\TestCase
         $amount         = 1.00;
 
         $order = $this->createOrderMock($amount, 0.00, 0.00);
-        $list  = $this->createVindiProductManagementMock($vindiProductId)->findOrCreateProductsFromOrder($order);
+        $list  = $this->createVindiProductManagementMock($vindiProductId)->findOrCreateProductsToSubscription($order);
         
         $this->makeAssertions($list, $vindiProductId, $amount);
     }
@@ -33,10 +56,11 @@ class OrderTest extends \PHPUnit\Framework\TestCase
         $amount         = -5.00;
 
         $order = $this->createOrderMock(0.00, $amount, 0.00);
-        $list  = $this->createVindiProductManagementMock($vindiProductId)->findOrCreateProductsFromOrder($order);
+        $list  = $this->createVindiProductManagementMock($vindiProductId)->findOrCreateProductsToSubscription($order);
 
-        $this->makeAssertions($list, $vindiProductId, $amount);
-    }    
+        $this->assertEquals(1, count($list));
+        $this->assertEquals(5.0, $list[0]['discounts'][0]['amount']);
+    }
 
     public function testOrderWithShipping()
     {
@@ -44,7 +68,7 @@ class OrderTest extends \PHPUnit\Framework\TestCase
         $amount         = 10.00;
 
         $order = $this->createOrderMock(0.00, 0.00, $amount);
-        $list  = $this->createVindiProductManagementMock($vindiProductId)->findOrCreateProductsFromOrder($order);
+        $list  = $this->createVindiProductManagementMock($vindiProductId)->findOrCreateProductsToSubscription($order);
 
         $this->makeAssertions($list, $vindiProductId, $amount);
     }
@@ -52,17 +76,17 @@ class OrderTest extends \PHPUnit\Framework\TestCase
     private function makeAssertions($list, $vindiProductId, $amount)
     {
         $this->assertContains('fake_sku', $list[0]['product_id'], '', true);
-        $this->assertEquals('9.99', $list[0]['amount']);
+        $this->assertEquals('9.99', $list[0]['pricing_schema']['price']);
 
         $this->assertEquals($vindiProductId, $list[1]['product_id']);
-        $this->assertEquals($amount, $list[1]['amount']);
+        $this->assertEquals($amount, $list[1]['pricing_schema']['price']);
 
         return true;
     }
 
     private function createApiMock($desiredTestResponse = null)
     {
-        $apiMock = $this->getMockBuilder(\Vindi\Payment\Helper\Api::class)
+        $apiMock = $this->getMockBuilder(Api::class)
             ->disableOriginalConstructor()
             ->getMock();
 
